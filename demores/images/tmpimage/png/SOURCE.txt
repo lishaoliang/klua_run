@@ -1,0 +1,25 @@
+PNG format test images (expected LOAD by klb_png_read)
+
+Layout: tmpimage/png/<type>/<file>.png
+lua test key: /png/<type>/<stem>  e.g. /png/rgb8/basn2c08
+
+Types (should succeed)
+  gray8           PngSuite basn0g08.png     8bit grayscale
+  rgb8            PngSuite basn2c08.png     8bit RGB
+  indexed8        PngSuite basn3p08.png     8bit palette
+  gray_alpha8     PngSuite basn4a08.png     8bit gray+alpha
+  rgba8           PngSuite basn6a08.png     8bit RGBA
+                  cover.png                 copy of tmpimage/cover.png
+  indexed_124     PngSuite basn3p01/02/04   1/2/4bit indexed
+  rgb16           PngSuite basn2c16.png     16bit RGB, reader down to 8bit
+  gray16          PngSuite basn0g16.png     16bit gray, reader down to 8bit
+
+Reject samples (NOT copied here; avoid load_images errors):
+  download/uires/fmt_test/png/reject_interlace/
+    basi2c08.png  interlaced RGB   expect NULL
+    basi6a08.png  interlaced RGBA  expect NULL
+
+Sources
+  PngSuite  http://www.schaik.com/pngsuite/
+  License   Willem van Schaik: use/copy/modify/distribute for any purpose without fee
+  cover.png  existing tmpimage file

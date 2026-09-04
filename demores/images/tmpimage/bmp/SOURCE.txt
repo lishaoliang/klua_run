@@ -1,0 +1,28 @@
+BMP format test images (expected LOAD by klb_bitmap_read)
+
+Layout: tmpimage/bmp/<type>/<file>.bmp
+lua test key: /bmp/<type>/<stem>  e.g. /bmp/24bit_bi_rgb/quad_16
+
+Types (should succeed)
+  24bit_bi_rgb     BI_RGB 24bpp, BITMAPINFOHEADER 40, bottom-up
+                   quad_16.bmp  generated 16x16 quadrants
+                   cover.bmp    GDI+ from tmpimage/cover.png 160x160
+  32bit_bi_rgb     BI_RGB 32bpp; A byte 0 treated opaque
+  32bit_bitfields  standard BGRA masks
+                   quad_16_v4.bmp       V4 header + A mask (keep transparent)
+                   quad_16_v3_xrgb.bmp  v3 + 3 masks, A=0 (opaque)
+  8bit_palette     BI_RGB 8bpp + 256 palette
+  16bit_rgb555     BI_RGB 16bpp RGB555
+  top_down         biHeight < 0
+                   quad_16_24.bmp       24bpp
+                   quad_16_32_v4.bmp    32bpp BITFIELDS + A
+
+Reject samples (NOT copied here; avoid load_images errors):
+  download/uires/fmt_test/bmp/reject/
+    16bit_rgb565.bmp  BITFIELDS RGB565  expect NULL
+    1bit.bmp          1 bpp             expect NULL
+    rle8.bmp          BI_RLE8           expect NULL
+
+Sources
+  quad_*.bmp  generated (klua_run/tmp/gen_fmt_test.ps1)
+  cover converted from existing tmpimage PNG

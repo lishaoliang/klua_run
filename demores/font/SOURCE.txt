@@ -1,0 +1,22 @@
+Test fonts under klua_run/demores/font (ttf / ttc / otf)
+
+Files
+  simsun.ttc                 existing Windows-style UI font (do not replace without confirm)
+  NotoSansCJKsc-Regular.otf  Noto Sans CJK SC Regular (Sans, UI)
+  LxgwWenKai-Regular.ttf     LXGW WenKai Regular (Kai, readable body)
+
+Sources / license
+  Noto Sans CJK SC
+    https://github.com/notofonts/noto-cjk
+    OFL-1.1 (SIL Open Font License)
+    Download: jsDelivr CDN, 2026-09-04
+
+  LXGW WenKai
+    https://github.com/lxgw/LxgwWenKai
+    OFL-1.1
+    Release v1.522 (LXGWWenKai-Regular.ttf), 2026-09-04
+    Note: first download was jsDelivr 404 text; replaced with GitHub release asset
+
+Usage (lua test)
+  pref.font_face: auto | stem e.g. NotoSansCJKsc-Regular | LxgwWenKai-Regular | simsun
+  auto picks first font by stem sort under demores/font
