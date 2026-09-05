@@ -35,8 +35,8 @@ local M = {
     ['HintSaved'] = 'Saved. Font size, font and colors apply now. Resolution and images apply on next launch.',
     ['Config'] = 'Config',
 
-    -- lua test 1.4.3
-    ['KpictureHint'] = '1.4.3 kpicture image combo; left fit, same image',
+    -- lua test 1.3.3
+    ['KpictureHint'] = '1.3.3 kpicture image combo; left fit, same image',
     ['KpictureLabFmt'] = 'kpicture %s',
     ['ToggleHide'] = 'Toggle hide',
     ['KpictureFmtImage'] = 'image',
@@ -52,8 +52,8 @@ local M = {
     ['KpictureVisible'] = 'pic visible',
     ['KpictureHidden'] = 'pic hidden',
 
-    -- lua test 1.3.1
-    ['KdialogHint'] = '1.3.1 kdialog title/value',
+    -- lua test 1.2.1
+    ['KdialogHint'] = '1.2.1 kdialog title/value',
     ['KdialogLabFmt'] = 'kdialog title=%s',
     ['KdialogTitle'] = 'Dialog',
     ['KdialogTitle2'] = 'Dialog2',
@@ -63,8 +63,8 @@ local M = {
     ['KdialogVisible'] = 'dlg visible',
     ['KdialogHidden'] = 'dlg hidden',
 
-    -- lua test 1.3.2
-    ['KviewHint'] = '1.3.2 kview title/bg/hide',
+    -- lua test 1.2.2
+    ['KviewHint'] = '1.2.2 kview title/bg/hide',
     ['KviewLabFmt'] = 'kview title=%s',
     ['KviewTitle'] = 'View',
     ['KviewTitle2'] = 'View2',
@@ -74,25 +74,25 @@ local M = {
     ['KviewVisible'] = 'box visible',
     ['KviewHidden'] = 'box hidden',
 
-    -- lua test 1.3.3
+    -- lua test 1.2.3
     ['Tab1'] = 'Tab1',
     ['Tab2'] = 'Tab2',
-    ['KtabHint'] = '1.3.3 ktab pages',
+    ['KtabHint'] = '1.2.3 ktab pages',
     ['KtabLabFmt'] = 'ktab title=%s',
     ['KtabGetFmt'] = 'get title=%s',
     ['KtabBody1'] = 'page 1',
     ['KtabBody2'] = 'page 2',
 
-    -- lua test 1.3.4
+    -- lua test 1.2.4
     ['Item1'] = 'Item1',
     ['Item2'] = 'Item2',
     ['Item3'] = 'Item3',
-    ['KmenuHint'] = '1.3.4 kmenu append/onchange',
+    ['KmenuHint'] = '1.2.4 kmenu append/onchange',
     ['KmenuLabFmt'] = 'kmenu value=%s',
     ['KmenuGetFmt'] = 'get value=%s',
 
-    -- lua test 1.3.5
-    ['KdivHint'] = '1.3.5 kdiv title/index/hide',
+    -- lua test 1.2.5
+    ['KdivHint'] = '1.2.5 kdiv title/index/hide',
     ['KdivLabFmt'] = 'kdiv title=%s index=%s',
     ['KdivTitle'] = 'Div',
     ['KdivTitle2'] = 'Div2',
@@ -102,18 +102,18 @@ local M = {
     ['KdivVisible'] = 'box visible',
     ['KdivHidden'] = 'box hidden',
 
-    -- lua test 1.3.6
-    ['KmodalHint'] = '1.3.6 modal overlay',
+    -- lua test 1.2.6
+    ['KmodalHint'] = '1.2.6 modal overlay',
     ['KmodalLabFmt'] = 'modal num=%s',
     ['KmodalTitle'] = 'Modal',
     ['KmodalBody'] = 'overlay',
 
-    -- lua test 1.3.7
-    ['KpopupHint'] = '1.3.7 popup kmenu',
+    -- lua test 1.2.7
+    ['KpopupHint'] = '1.2.7 popup kmenu',
     ['KpopupLabFmt'] = 'popup value=%s num=%s',
 
-    -- lua test 1.3.8
-    ['KmsgHint'] = '1.3.8 messagebox',
+    -- lua test 1.2.8
+    ['KmsgHint'] = '1.2.8 messagebox',
     ['KmsgLabFmt'] = 'messagebox value=%s num=%s',
     ['KmsgTitle'] = 'Message',
     ['KmsgBody'] = 'confirm or cancel',

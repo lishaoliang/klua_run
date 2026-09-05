@@ -12,6 +12,8 @@
 --  \n 2026 relocation 后由本层调用 apply_pref
 --  \n 2026 开窗前应用 appearance
 --  \n 2026 开窗前应用 font_face (auto / 指定字库)
+--  \n 2026 demores 皮肤 S000/S001/S002 + tmpimage 图
+--  \n 2026 _rs 委托 pref.from_wh
 --]]
 
 
@@ -192,6 +194,8 @@ local function _load_demores(opts, base, klbui)
 	end
 
 	theme.bind_images(uires, klbui, base)
+	theme.apply_skin(uires, klbui, base, cfg.appearance, theme.font_tier(cfg.font_size))
+	theme.apply_skin_css(uires)
 	if opts.load_images ~= false then
 		theme.apply_images(uires, klbui, base, cfg.appearance)
 	end
@@ -209,38 +213,18 @@ local function _load_demores(opts, base, klbui)
 end
 
 
--- @brief 按窗口宽映射分辨率档
+-- @brief 按窗口宽高映射分辨率档
 -- @param [in] w[number]    窗口宽
--- @return rs[string]       720p / 1366x768 / 900p / 1080p / 1440p / 4k
-local function _rs(w)
-	w = tonumber(w) or 0
-	if 3840 <= w then
-		return "4k"
-	end
-
-	if 2560 <= w then
-		return "1440p"
-	end
-
-	if 1920 <= w then
-		return "1080p"
-	end
-
-	if 1600 <= w then
-		return "900p"
-	end
-
-	if 1366 <= w then
-		return "1366x768"
-	end
-
-	return "720p"
+-- @param [in] h[number]    [可选] 窗口高
+-- @return rs[string]  见 pref.RS_ORDER
+local function _rs(w, h)
+	return pref.from_wh(w, h)
 end
 
 
 -- @brief 若页面有 relocation 则按分辨率装填 dialog/css
 -- @param [in] page[table]
--- @param [in] rs[string]   720p / 1366x768 / 900p / 1080p / 1440p / 4k
+-- @param [in] rs[string]   见 pref.RS_ORDER
 -- @return 无
 local function _apply_page(page, rs)
 	if type(page) ~= "table" then

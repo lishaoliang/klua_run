@@ -1,0 +1,150 @@
+﻿--[[
+-- Copyright (c) 2026, GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+-- @file   S002_css.lua
+-- @brief  Global CSS for shared windows (/klbui/*)
+-- @note   Appearance: github-dark
+-- @note   Loaded by uires css_loader from skin dir (S000/S001/S002 sequential merge)
+-- @history ��?改历��?
+--  \n 2026 创建; S00 拆出 shwnd (/klbui/*, css_loader 字号阶�??)
+--]]
+
+
+local css_loader = require("klbcore.klbui.uires.css_loader")
+
+local M = {}
+
+local font_size_S = css_loader.font_size_S()
+local font_size_M = css_loader.font_size_M()
+
+M['global'] = {
+	["shwnd"] = {
+		["/klbui/calendar-menu"] = {
+			["btn.stretch-image"] = "/scale9/calendar_btn_bg.bmp",
+			["btn.stretch-image:focus"] = "/scale9/calendar_btn_bg_focus.bmp",
+			["calendar.button_h"] = 36,
+			["calendar.button_w"] = 76,
+			["calendar.change_ym_h"] = 36,
+			["calendar.change_ym_w"] = 40,
+			["calendar.row_h"] = 36,
+			["font-size"] = font_size_M,
+			["font-size:disabled"] = font_size_M,
+			["font-size:focus"] = font_size_M,
+		},
+		["/klbui/combo-menu"] = {
+			["background-color"] = {255, 13, 17, 23},
+			["border-color"] = {255, 48, 54, 61},
+			["height_max"] = 362,
+			["item.background-color"] = {255, 13, 17, 23},
+			["item.background-color:focus"] = {255, 13, 17, 23},
+			["item.border-color"] = {255, 88, 166, 255},
+			["item.border-color:focus"] = {255, 88, 166, 255},
+			["item.color"] = {255, 201, 209, 217},
+			["item.color:focus"] = {255, 201, 209, 217},
+			["item.font-size"] = font_size_S,
+			["item.font-size:focus"] = font_size_M,
+			["item.text-align"] = "left",
+			["item.text-align:disabled"] = "left",
+			["item.text-align:focus"] = "left",
+			["item_h"] = 28,
+			["padding-left"] = 2,
+			["padding-right"] = 2,
+			["vscrollbar.background-color"] = {255, 13, 17, 23},
+			["vscrollbar.background-color:focus"] = {255, 13, 17, 23},
+			["vscrollbar.border-color"] = {255, 201, 209, 217},
+			["vscrollbar.border-color:focus"] = {255, 201, 209, 217},
+			["vscrollbar-button.background-color"] = {255, 13, 17, 23},
+			["vscrollbar-button.background-color:focus"] = {255, 13, 17, 23},
+			["vscrollbar-button.color"] = {255, 48, 54, 61},
+			["vscrollbar-button.color:focus"] = {255, 72, 79, 88},
+			["vscrollbar.color"] = {255, 0, 0, 0},
+			["vscrollbar.color:focus"] = {255, 201, 209, 217},
+			["vscrollbar_w"] = 20,
+		},
+		["/klbui/decimal-menu"] = {
+			["background-color"] = {255, 22, 27, 34},
+			["border-color"] = {255, 48, 54, 61},
+			["button.background-color"] = {255, 81, 86, 93},
+			["button.background-color:focus"] = {255, 81, 86, 93},
+			["button.backspace-image"] = "/widgets/backspace.bmp",
+			["button.backspace-image:focus"] = "/widgets/backspace_focus.bmp",
+			["button.border-color"] = {255, 201, 209, 217},
+			["button.border-color:focus"] = {255, 255, 0, 0},
+			["button.check.stretch-image"] = "/scale9/button_background.bmp",
+			["button.check.stretch-image:focus"] = "/scale9/button_background_focus.bmp",
+			["button.color"] = {255, 201, 209, 217},
+			["button.color:focus"] = {255, 201, 209, 217},
+			["button.font-size"] = font_size_M,
+			["button.font-size:disabled"] = font_size_M,
+			["button.font-size:focus"] = font_size_M,
+			["button.moveleft-image"] = "/widgets/move_left.bmp",
+			["button.moveleft-image:focus"] = "/widgets/move_left_focus.bmp",
+			["button.moveright-image"] = "/widgets/move_right.bmp",
+			["button.moveright-image:focus"] = "/widgets/move_right_focus.bmp",
+			["button.stretch-image"] = "/scale9/button_background.bmp",
+			["button.stretch-image:focus"] = "/scale9/button_background_focus.bmp",
+			["font-size"] = font_size_M,
+			["string.background-color"] = {255, 22, 27, 34},
+		},
+		["/klbui/decimal-menu-ip"] = {
+			["background-color"] = {255, 22, 27, 34},
+			["border-color"] = {255, 48, 54, 61},
+			["button.background-color"] = {255, 81, 86, 93},
+			["button.background-color:focus"] = {255, 81, 86, 93},
+			["button.backspace-image"] = "/widgets/backspace.bmp",
+			["button.backspace-image:focus"] = "/widgets/backspace_focus.bmp",
+			["button.border-color"] = {255, 201, 209, 217},
+			["button.border-color:focus"] = {255, 255, 0, 0},
+			["button.check.stretch-image"] = "/scale9/button_background.bmp",
+			["button.check.stretch-image:focus"] = "/scale9/button_background_focus.bmp",
+			["button.color"] = {255, 201, 209, 217},
+			["button.color:focus"] = {255, 201, 209, 217},
+			["button.font-size"] = font_size_M,
+			["button.font-size:disabled"] = font_size_M,
+			["button.font-size:focus"] = font_size_M,
+			["button.moveleft-image"] = "/widgets/move_left.bmp",
+			["button.moveleft-image:focus"] = "/widgets/move_left_focus.bmp",
+			["button.moveright-image"] = "/widgets/move_right.bmp",
+			["button.moveright-image:focus"] = "/widgets/move_right_focus.bmp",
+			["button.stretch-image"] = "/scale9/button_background.bmp",
+			["button.stretch-image:focus"] = "/scale9/button_background_focus.bmp",
+			["font-size"] = font_size_M,
+			["string.background-color"] = {255, 22, 27, 34},
+		},
+		["/klbui/edit-menu"] = {
+			["background-color"] = {255, 22, 27, 34},
+			["border-color"] = {255, 48, 54, 61},
+			["button.background-color"] = {255, 81, 86, 93},
+			["button.background-color:focus"] = {255, 81, 86, 93},
+			["button.backspace-image"] = "/widgets/backspace.bmp",
+			["button.backspace-image:disabled"] = "/widgets/backspace_disable.bmp",
+			["button.backspace-image:focus"] = "/widgets/backspace_focus.bmp",
+			["button.border-color"] = {255, 201, 209, 217},
+			["button.border-color:focus"] = {255, 255, 0, 0},
+			["button.check.stretch-image"] = "/scale9/button_background.bmp",
+			["button.check.stretch-image:focus"] = "/scale9/button_background_focus.bmp",
+			["button.color"] = {255, 201, 209, 217},
+			["button.color:focus"] = {255, 201, 209, 217},
+			["button.font-size"] = font_size_M,
+			["button.font-size:disabled"] = font_size_M,
+			["button.font-size:focus"] = font_size_M,
+			["button.global-image"] = "/widgets/global.bmp",
+			["button.global-image:disabled"] = "/widgets/global_disable.bmp",
+			["button.global-image:focus"] = "/widgets/global_focus.bmp",
+			["button.moveleft-image"] = "/widgets/move_left.bmp",
+			["button.moveleft-image:disabled"] = "/widgets/move_left_disable.bmp",
+			["button.moveleft-image:focus"] = "/widgets/move_left_focus.bmp",
+			["button.moveright-image"] = "/widgets/move_right.bmp",
+			["button.moveright-image:disabled"] = "/widgets/move_right_disable.bmp",
+			["button.moveright-image:focus"] = "/widgets/move_right_focus.bmp",
+			["button.stretch-image"] = "/scale9/button_background.bmp",
+			["button.stretch-image:disabled"] = "/scale9/button_greyground.bmp",
+			["button.stretch-image:focus"] = "/scale9/button_background_focus.bmp",
+			["font-size"] = font_size_M,
+			["string.background-color"] = {255, 22, 27, 34},
+		},
+		["/klbui/messagebox"] = {
+		},
+	},
+}
+
+return M

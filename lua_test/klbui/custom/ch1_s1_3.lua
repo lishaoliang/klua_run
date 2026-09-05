@@ -22,22 +22,7 @@ local jq0 = function () end
 
 local css_720p = {
 	['type'] = {
-		['kview'] = {
-			['background-color'] = {255, 48, 48, 52},
-		},
-		['kbutton'] = {
-			['background-color'] = {255, 70, 70, 80},
-			['border-width'] = 1,
-			['border-color'] = {255, 140, 140, 140},
-		},
-		['kdemo'] = {
-			['background-color'] = {255, 60, 80, 60},
-		},
-		['kpicture'] = {
-			['border-width'] = 1,
-			['border-color'] = {255, 160, 120, 120},
-		},
-	}
+	},
 }
 
 
@@ -108,22 +93,22 @@ M.jq0 = jq0
 
 -- 重定向
 M.relocation = function (rs)
-	if '720p' == rs then
+	if 'HD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '1366x768' == rs then
+	elseif 'WXGA' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '900p' == rs then
+	elseif 'HD+' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '1080p' == rs then
+	elseif 'Full HD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '1440p' == rs then
+	elseif 'QHD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '4k' == rs then
+	elseif '4K UHD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
 	else

@@ -1,10 +1,9 @@
 ﻿--[[
 -- Copyright (c) 2026, GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 -- @file   theme.lua
--- @brief  klbui UI 外观 (default_css)
+-- @brief  klbui UI 外观 (皮肤目录编排)
 -- @note   约定 **klua-test-design** / **klbcore-klbui-page**; 模块 lua_test.klbui.theme
---  \n dark 仿 VS Code; win11-dark / ios-dark / material-dark / github-dark 仿各平台深色
---  \n light 仿 XP 蓝; fluent 仿 Win11 浅色
+--  \n 配色/CSS 真源 demores/images/<skin>/S000/S001/S002_css.lua
 --  \n 图根 demores/images/tmpimage; 对应 C "~/tmpimage"; 页面 key 不含皮肤名
 --  \n 产品皮肤图 demores/images/<skin_dir>; appearance 中 - 换 _ (如 win11-dark → win11_dark)
 --  \n 由 ui.run / pref 生效; 页面只同步本页控件
@@ -15,8 +14,13 @@
 --  \n 2026 删除 plain 外观档
 --  \n 2026 增加 win11-dark / ios-dark / material-dark / github-dark
 --  \n 2026 产品皮肤目录 skin_dir (- 换 _)
+--  \n 2026 apply_skin: 皮肤目录 CSS+图片 (S000/S001/S002)
+--  \n 2026 font_tier; apply_images 皮肤+tmpimage; apply_live 换肤重载皮肤 CSS
+--  \n 2026 CSS 迁入皮肤 S***_css.lua; theme 读 css_loader.default()
 --]]
 
+
+local css_loader = require("klbcore.klbui.uires.css_loader")
 
 local M = {}
 
@@ -37,216 +41,6 @@ M.ORDER = {
 	"github-dark",
 	"light",
 	"fluent",
-}
-
--- 旧 klbui.json plain → 缺省外观
-M.APPEARANCE_LEGACY = {
-	["plain"] = "dark",
-}
-
-
-local function _c(r, g, b)
-	return {255, r, g, b}
-end
-
-
-local function _join(base, rel)
-	if base == nil or base == "" then
-		return rel
-	end
-
-	local last = base:sub(-1)
-	if last == "/" or last == "\\" then
-		return base .. rel
-	end
-
-	return base .. "/" .. rel
-end
-
-
-local images_ctx = {
-	uires = nil,
-	klbui = nil,
-	base = "",
-}
-
-
--- 配色键 (default_css / 已 parse 控件)
-local CSS_KEYS = {
-	"color",
-	"color:focus",
-	"color:disabled",
-	"color:checked",
-	"color:input",
-	"background-color",
-	"background-color:focus",
-	"background-color:disabled",
-	"background-color:checked",
-	"background-color:input",
-	"border-color",
-	"border-color:focus",
-	"border-color:disabled",
-	"border-color:checked",
-	"border-color:input",
-	"border-width",
-}
-
-
--- 1. 仿 VS Code Dark+
-local CSS_DARK = {
-	["color"] = _c(204, 204, 204),
-	["color:focus"] = _c(255, 255, 255),
-	["color:disabled"] = _c(133, 133, 133),
-	["color:checked"] = _c(255, 255, 255),
-	["color:input"] = _c(204, 204, 204),
-	["background-color"] = _c(30, 30, 30),
-	["background-color:focus"] = _c(37, 37, 38),
-	["background-color:disabled"] = _c(30, 30, 30),
-	["background-color:checked"] = _c(9, 71, 113),
-	["background-color:input"] = _c(60, 60, 60),
-	["border-color"] = _c(60, 60, 60),
-	["border-color:focus"] = _c(0, 122, 204),
-	["border-color:disabled"] = _c(60, 60, 60),
-	["border-color:checked"] = _c(0, 122, 204),
-	["border-color:input"] = _c(0, 122, 204),
-	["border-width"] = 1,
-}
-
-
--- 2. 仿 Windows 11 深色
-local CSS_WIN11_DARK = {
-	["color"] = _c(255, 255, 255),
-	["color:focus"] = _c(255, 255, 255),
-	["color:disabled"] = _c(109, 109, 109),
-	["color:checked"] = _c(255, 255, 255),
-	["color:input"] = _c(255, 255, 255),
-	["background-color"] = _c(32, 32, 32),
-	["background-color:focus"] = _c(43, 43, 43),
-	["background-color:disabled"] = _c(32, 32, 32),
-	["background-color:checked"] = _c(0, 88, 163),
-	["background-color:input"] = _c(45, 45, 45),
-	["border-color"] = _c(69, 69, 69),
-	["border-color:focus"] = _c(0, 120, 212),
-	["border-color:disabled"] = _c(69, 69, 69),
-	["border-color:checked"] = _c(0, 120, 212),
-	["border-color:input"] = _c(69, 69, 69),
-	["border-width"] = 1,
-}
-
-
--- 3. 仿 iOS / macOS HIG 深色
-local CSS_IOS_DARK = {
-	["color"] = _c(255, 255, 255),
-	["color:focus"] = _c(255, 255, 255),
-	["color:disabled"] = _c(142, 142, 147),
-	["color:checked"] = _c(255, 255, 255),
-	["color:input"] = _c(255, 255, 255),
-	["background-color"] = _c(28, 28, 30),
-	["background-color:focus"] = _c(44, 44, 46),
-	["background-color:disabled"] = _c(28, 28, 30),
-	["background-color:checked"] = _c(0, 72, 147),
-	["background-color:input"] = _c(28, 28, 30),
-	["border-color"] = _c(56, 56, 58),
-	["border-color:focus"] = _c(10, 132, 255),
-	["border-color:disabled"] = _c(56, 56, 58),
-	["border-color:checked"] = _c(10, 132, 255),
-	["border-color:input"] = _c(56, 56, 58),
-	["border-width"] = 1,
-}
-
-
--- 4. 仿 Material 3 Dark
-local CSS_MATERIAL_DARK = {
-	["color"] = _c(230, 225, 229),
-	["color:focus"] = _c(230, 225, 229),
-	["color:disabled"] = _c(147, 143, 153),
-	["color:checked"] = _c(255, 255, 255),
-	["color:input"] = _c(230, 225, 229),
-	["background-color"] = _c(18, 18, 18),
-	["background-color:focus"] = _c(30, 30, 30),
-	["background-color:disabled"] = _c(18, 18, 18),
-	["background-color:checked"] = _c(55, 48, 70),
-	["background-color:input"] = _c(46, 46, 46),
-	["border-color"] = _c(72, 72, 72),
-	["border-color:focus"] = _c(187, 134, 252),
-	["border-color:disabled"] = _c(72, 72, 72),
-	["border-color:checked"] = _c(187, 134, 252),
-	["border-color:input"] = _c(72, 72, 72),
-	["border-width"] = 1,
-}
-
-
--- 5. 仿 GitHub Dark
-local CSS_GITHUB_DARK = {
-	["color"] = _c(201, 209, 217),
-	["color:focus"] = _c(230, 237, 243),
-	["color:disabled"] = _c(72, 79, 88),
-	["color:checked"] = _c(255, 255, 255),
-	["color:input"] = _c(201, 209, 217),
-	["background-color"] = _c(13, 17, 23),
-	["background-color:focus"] = _c(22, 27, 34),
-	["background-color:disabled"] = _c(13, 17, 23),
-	["background-color:checked"] = _c(17, 46, 87),
-	["background-color:input"] = _c(22, 27, 34),
-	["border-color"] = _c(48, 54, 61),
-	["border-color:focus"] = _c(88, 166, 255),
-	["border-color:disabled"] = _c(48, 54, 61),
-	["border-color:checked"] = _c(88, 166, 255),
-	["border-color:input"] = _c(48, 54, 61),
-	["border-width"] = 1,
-}
-
-
--- 6. 仿 Windows XP Luna 蓝 (对话框米色 + 标题蓝)
-local CSS_LIGHT = {
-	["color"] = _c(0, 0, 0),
-	["color:focus"] = _c(0, 0, 0),
-	["color:disabled"] = _c(172, 168, 153),
-	["color:checked"] = _c(255, 255, 255),
-	["color:input"] = _c(0, 0, 0),
-	["background-color"] = _c(236, 233, 216),
-	["background-color:focus"] = _c(236, 233, 216),
-	["background-color:disabled"] = _c(236, 233, 216),
-	["background-color:checked"] = _c(49, 106, 197),
-	["background-color:input"] = _c(255, 255, 255),
-	["border-color"] = _c(0, 84, 227),
-	["border-color:focus"] = _c(61, 149, 255),
-	["border-color:disabled"] = _c(192, 192, 192),
-	["border-color:checked"] = _c(10, 36, 106),
-	["border-color:input"] = _c(127, 157, 185),
-	["border-width"] = 1,
-}
-
-
--- 7. 仿 Windows 11 Fluent 浅色
-local CSS_FLUENT = {
-	["color"] = _c(26, 26, 26),
-	["color:focus"] = _c(26, 26, 26),
-	["color:disabled"] = _c(157, 157, 157),
-	["color:checked"] = _c(255, 255, 255),
-	["color:input"] = _c(26, 26, 26),
-	["background-color"] = _c(243, 243, 243),
-	["background-color:focus"] = _c(249, 249, 249),
-	["background-color:disabled"] = _c(243, 243, 243),
-	["background-color:checked"] = _c(0, 120, 212),
-	["background-color:input"] = _c(255, 255, 255),
-	["border-color"] = _c(229, 229, 229),
-	["border-color:focus"] = _c(0, 120, 212),
-	["border-color:disabled"] = _c(229, 229, 229),
-	["border-color:checked"] = _c(0, 120, 212),
-	["border-color:input"] = _c(209, 209, 209),
-	["border-width"] = 1,
-}
-
-
-local CSS = {
-	["dark"] = CSS_DARK,
-	["win11-dark"] = CSS_WIN11_DARK,
-	["ios-dark"] = CSS_IOS_DARK,
-	["material-dark"] = CSS_MATERIAL_DARK,
-	["github-dark"] = CSS_GITHUB_DARK,
-	["light"] = CSS_LIGHT,
-	["fluent"] = CSS_FLUENT,
 }
 
 
@@ -272,11 +66,43 @@ local LANG_KEY = {
 }
 
 
+local images_ctx = {
+	uires = nil,
+	klbui = nil,
+	base = "",
+}
+
+
+local function _join(base, rel)
+	if base == nil or base == "" then
+		return rel
+	end
+
+	local last = base:sub(-1)
+	if last == "/" or last == "\\" then
+		return base .. rel
+	end
+
+	return base .. "/" .. rel
+end
+
+
+local function _is_known(name)
+	for i = 1, #M.ORDER do
+		if M.ORDER[i] == name then
+			return true
+		end
+	end
+
+	return false
+end
+
+
 -- @brief 是否合法外观档
 -- @param [in] name[string]
 -- @return ok[boolean]
 function M.is(name)
-	return CSS[name] ~= nil
+	return _is_known(name)
 end
 
 
@@ -284,10 +110,6 @@ end
 -- @param [in] name[string]
 -- @return name[string]
 function M.norm(name)
-	if type(name) == "string" and M.APPEARANCE_LEGACY[name] ~= nil then
-		name = M.APPEARANCE_LEGACY[name]
-	end
-
 	if M.is(name) then
 		return name
 	end
@@ -301,6 +123,23 @@ end
 -- @return ok[boolean]
 function M.use_images(name)
 	return true
+end
+
+
+-- @brief pref font_size 档映射 css_loader S/M/L (16→S, 20/24→M, 28/32→L)
+-- @param [in] font_size[string|number]
+-- @return tier[string]  'S' / 'M' / 'L'
+function M.font_tier(font_size)
+	font_size = tostring(font_size or "24")
+	if "16" == font_size then
+		return "S"
+	end
+
+	if "28" == font_size or "32" == font_size then
+		return "L"
+	end
+
+	return "M"
 end
 
 
@@ -360,7 +199,52 @@ function M.bind_images(uires, klbui, base)
 end
 
 
--- @brief 重置图片检索根并加载 (lua test 固定 tmpimage)
+-- @brief 加载皮肤目录 (CSS + 图片同目录; 见 demores/images/README.md)
+-- @param [in] uires[table]
+-- @param [in] klbui[table]		[可选] 换肤前 clear_image
+-- @param [in] base[string]
+-- @param [in] name[string]		appearance
+-- @param [in] font_tier[string]	[可选] 'S' / 'M' / 'L'; 默认 'M'
+-- @return 无
+function M.apply_skin(uires, klbui, base, name, font_tier)
+	if type(uires) ~= "table" then
+		return
+	end
+
+	name = M.norm(name)
+	local skin_dir = M.images_skin_dir(base, name)
+	if type(uires.configure) == "function" then
+		uires.configure({
+			css_dirs = { skin_dir },
+			image_dirs = { skin_dir },
+		})
+	end
+
+	if type(uires.load_css) == "function" then
+		uires.load_css(font_tier or "M")
+	end
+
+	if type(klbui) == "table" and type(klbui.clear_image) == "function" then
+		klbui.clear_image()
+	end
+
+	if type(uires.load_images) == "function" then
+		uires.load_images()
+	end
+end
+
+
+-- @brief 生效皮肤全局 CSS (须在 apply_skin / load_css 之后, parse 前)
+-- @param [in] uires[table]
+-- @return 无
+function M.apply_skin_css(uires)
+	if type(uires) == "table" and type(uires.apply_css) == "function" then
+		uires.apply_css()
+	end
+end
+
+
+-- @brief 加载皮肤图 + lua test 图 (皮肤目录优先, tmpimage 覆盖同 key)
 -- @param [in] uires[table]
 -- @param [in] klbui[table]
 -- @param [in] base[string]
@@ -372,32 +256,30 @@ function M.apply_images(uires, klbui, base, name)
 	end
 
 	name = M.norm(name)
+	local dirs = {}
 	if M.use_images(name) then
-		uires.configure({
-			image_dirs = {
-				M.images_dir(base, name),
-			},
-		})
-		if type(klbui) == "table" and type(klbui.clear_image) == "function" then
-			klbui.clear_image()
-		end
+		dirs[#dirs + 1] = M.images_skin_dir(base, name)
+		dirs[#dirs + 1] = M.images_dir(base, name)
+	end
+
+	uires.configure({
+		image_dirs = dirs,
+	})
+	if type(klbui) == "table" and type(klbui.clear_image) == "function" then
+		klbui.clear_image()
+	end
+
+	if 0 < #dirs and type(uires.load_images) == "function" then
 		uires.load_images()
-	else
-		uires.configure({
-			image_dirs = {},
-		})
-		if type(klbui) == "table" and type(klbui.clear_image) == "function" then
-			klbui.clear_image()
-		end
 	end
 end
 
 
--- @brief 外观 default_css 表
--- @param [in] name[string]
+-- @brief 当前皮肤 S000 default_css (须在 load_css 之后)
+-- @param [in] name[string]  [可选] 未用; 保留 API 兼容
 -- @return css[table]
 function M.css(name)
-	return CSS[M.norm(name)]
+	return css_loader.default()
 end
 
 
@@ -435,7 +317,7 @@ function M.append()
 end
 
 
--- @brief 应用外观到 default_css (须在 parse 前)
+-- @brief 应用外观到 default_css (须在 apply_skin / load_css 之后, parse 前)
 -- @param [in] klbui[table]
 -- @param [in] name[string]
 -- @return 无
@@ -444,7 +326,10 @@ function M.apply(klbui, name)
 		return
 	end
 
-	klbui.default_css(M.css(name))
+	local css = M.css(name)
+	if next(css) ~= nil then
+		klbui.default_css(css)
+	end
 end
 
 
@@ -452,12 +337,17 @@ end
 -- @param [in] klbui[table]
 -- @param [in] jq0[function]
 -- @param [in] name[string]
+-- @param [in] font_size[string]  [可选] pref font_size 档, 映射 css_loader S/M/L
 -- @return 无
-function M.apply_live(klbui, jq0, name)
-	M.apply(klbui, name)
+function M.apply_live(klbui, jq0, name, font_size)
 	if images_ctx.uires ~= nil then
+		M.apply_skin(images_ctx.uires, images_ctx.klbui, images_ctx.base, name,
+			M.font_tier(font_size))
+		M.apply_skin_css(images_ctx.uires)
 		M.apply_images(images_ctx.uires, images_ctx.klbui, images_ctx.base, name)
 	end
+
+	M.apply(klbui, name)
 	if type(jq0) ~= "function" then
 		return
 	end
@@ -465,9 +355,8 @@ function M.apply_live(klbui, jq0, name)
 	local css = M.css(name)
 	pcall(function ()
 		local all = jq0("*")
-		for i = 1, #CSS_KEYS do
-			local k = CSS_KEYS[i]
-			all.set(k, css[k])
+		for k, v in pairs(css) do
+			all.set(k, v)
 		end
 	end)
 end

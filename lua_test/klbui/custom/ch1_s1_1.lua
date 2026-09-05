@@ -25,10 +25,6 @@ local jq0 = function () end
 
 local css_720p = {
 	['type'] = {
-		['kcombo'] = {
-			['border-width'] = 1,
-			['padding-left'] = 8,
-		},
 	}
 }
 
@@ -58,16 +54,9 @@ local dialog_720p = {
 			['type'] = 'kcombo',
 			['pos'] = {224, 64, 240, 32},
 			['name'] = 'cmb_rs',
-			['title'] = pref.rs_title("1080p"),
-			['value'] = '1080p',
-			['append'] = {
-				{['720p'] = pref.rs_title("720p")},
-				{['1366x768'] = pref.rs_title("1366x768")}, -- WXGA
-				{['900p'] = pref.rs_title("900p")}, -- HD+
-				{['1080p'] = pref.rs_title("1080p")},
-				{['1440p'] = pref.rs_title("1440p")}, -- 2k
-				{['4k'] = pref.rs_title("4k")},
-			},
+			['title'] = pref.rs_title(pref.DEFAULT_RS),
+			['value'] = pref.DEFAULT_RS,
+			['append'] = pref.rs_append(),
 		},
 		{
 			['type'] = 'kstatic',
@@ -497,22 +486,22 @@ M.jq0 = jq0
 
 -- 重定向
 M.relocation = function (rs)
-	if '720p' == rs then
+	if 'HD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '1366x768' == rs then
+	elseif 'WXGA' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '900p' == rs then
+	elseif 'HD+' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '1080p' == rs then
+	elseif 'Full HD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '1440p' == rs then
+	elseif 'QHD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '4k' == rs then
+	elseif '4K UHD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
 	else

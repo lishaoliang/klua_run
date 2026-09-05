@@ -10,7 +10,8 @@
 --  \n 2026 增加 apply_font_live
 --  \n 2026 增加 appearance
 --  \n 2026 增加 font_face (auto / demores/font 指定字库)
---  \n 2026 font_size 档改为 16/20/24/28/32
+--  \n 2026 font_size 档改为 16/20/24/28/32; css_loader S/M/L 标准 16/24/32
+--  \n 2026 增加 WXGA+ / WSXGA+ / WUXGA / WQXGA / QHD+ / UW-FHD / UWQHD 分辨率档
 --]]
 
 
@@ -26,7 +27,7 @@ M.ORG = "klua"
 M.APP = "lua_test"
 M.FILE = "klbui.json"
 
-M.DEFAULT_RS = "1080p"
+M.DEFAULT_RS = "Full HD"
 M.DEFAULT_LANG = "en"
 M.DEFAULT_FONT = "24"
 M.DEFAULT_FONT_FACE = "auto"
@@ -40,12 +41,27 @@ M.FONT_EXT = {
 }
 
 M.SIZE = {
-	["720p"] = { w = 1280, h = 720 },
-	["1366x768"] = { w = 1366, h = 768 }, -- WXGA
-	["900p"] = { w = 1600, h = 900 }, -- HD+
-	["1080p"] = { w = 1920, h = 1080 },
-	["1440p"] = { w = 2560, h = 1440 }, -- 2k
-	["4k"] = { w = 3840, h = 2160 },
+	["HD"] = { w = 1280, h = 720 },
+	["WXGA"] = { w = 1366, h = 768 },
+	["WXGA+"] = { w = 1440, h = 900 },
+	["HD+"] = { w = 1600, h = 900 },
+	["WSXGA+"] = { w = 1680, h = 1050 },
+	["Full HD"] = { w = 1920, h = 1080 },
+	["WUXGA"] = { w = 1920, h = 1200 },
+	["QHD"] = { w = 2560, h = 1440 },
+	["WQXGA"] = { w = 2560, h = 1600 },
+	["QHD+"] = { w = 3200, h = 1800 },
+	["UW-FHD"] = { w = 2560, h = 1080 },
+	["UWQHD"] = { w = 3440, h = 1440 },
+	["4K UHD"] = { w = 3840, h = 2160 },
+}
+
+M.RS_ORDER = {
+	"HD", "WXGA", "WXGA+", "HD+", "WSXGA+",
+	"Full HD", "WUXGA",
+	"QHD", "WQXGA", "QHD+",
+	"UW-FHD", "UWQHD",
+	"4K UHD",
 }
 
 M.FONT = {
@@ -514,18 +530,26 @@ function M.lang_title(lang)
 end
 
 
--- @brief 分辨率档对应下拉显示名 (存储仍用档名)
+-- @brief 分辨率档对应下拉显示名 (标准称谓 + 像素)
 -- @param [in] rs[string]
--- @return title[string]
+-- @return title[string]  如 "Full HD (1920x1080)"
 function M.rs_title(rs)
 	rs = M.norm_rs(rs)
 	local sz = M.SIZE[rs]
-	local wh = sz.w .. "x" .. sz.h
-	if rs == wh then
-		return rs
+	return rs .. " (" .. sz.w .. "x" .. sz.h .. ")"
+end
+
+
+-- @brief 分辨率下拉 append
+-- @return list[array]
+function M.rs_append()
+	local append = {}
+	for i = 1, #M.RS_ORDER do
+		local name = M.RS_ORDER[i]
+		append[#append + 1] = { [name] = M.rs_title(name) }
 	end
 
-	return rs .. " (" .. wh .. ")"
+	return append
 end
 
 
@@ -535,6 +559,74 @@ end
 function M.size(rs)
 	local sz = M.SIZE[M.norm_rs(rs)]
 	return { w = sz.w, h = sz.h }
+end
+
+
+-- @brief 按窗口宽高推断分辨率档 (精确匹配优先, 否则按宽/高阈值)
+-- @param [in] w[number]
+-- @param [in] h[number]
+-- @return rs[string]
+function M.from_wh(w, h)
+	w = tonumber(w) or 0
+	h = tonumber(h) or 0
+
+	for i = 1, #M.RS_ORDER do
+		local name = M.RS_ORDER[i]
+		local sz = M.SIZE[name]
+		if sz.w == w and sz.h == h then
+			return name
+		end
+	end
+
+	if 3840 <= w then
+		return "4K UHD"
+	end
+
+	if 3400 <= w and 1400 <= h then
+		return "UWQHD"
+	end
+
+	if 3200 <= w and 1700 <= h then
+		return "QHD+"
+	end
+
+	if 2560 <= w and 1500 <= h then
+		return "WQXGA"
+	end
+
+	if 2560 <= w and h <= 1100 then
+		return "UW-FHD"
+	end
+
+	if 2560 <= w then
+		return "QHD"
+	end
+
+	if 1920 <= w and 1150 <= h then
+		return "WUXGA"
+	end
+
+	if 1920 <= w then
+		return "Full HD"
+	end
+
+	if 1680 <= w then
+		return "WSXGA+"
+	end
+
+	if 1600 <= w then
+		return "HD+"
+	end
+
+	if 1440 <= w then
+		return "WXGA+"
+	end
+
+	if 1366 <= w then
+		return "WXGA"
+	end
+
+	return "HD"
 end
 
 
@@ -688,7 +780,8 @@ end
 -- @param [in] name[string]
 -- @return 无
 function M.apply_appearance_live(klbui, jq0, name)
-	theme.apply_live(klbui, jq0, name)
+	local cfg = M.load()
+	theme.apply_live(klbui, jq0, name, cfg.font_size)
 end
 
 

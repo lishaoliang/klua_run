@@ -76,22 +76,22 @@ M.jq0 = jq0
 
 -- 重定向
 M.relocation = function (rs)
-	if '720p' == rs then
+	if 'HD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '1366x768' == rs then
+	elseif 'WXGA' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '900p' == rs then
+	elseif 'HD+' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '1080p' == rs then
+	elseif 'Full HD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '1440p' == rs then
+	elseif 'QHD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
-	elseif '4k' == rs then
+	elseif '4K UHD' == rs then
 		M.dialog = dialog_720p
 		M.css = css_720p
 	else
