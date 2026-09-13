@@ -42,25 +42,28 @@ M.FONT_EXT = {
 
 M.SIZE = {
 	["HD"] = { w = 1280, h = 720 },
+	["FWXGA"] = { w = 1360, h = 768 },
 	["WXGA"] = { w = 1366, h = 768 },
 	["WXGA+"] = { w = 1440, h = 900 },
 	["HD+"] = { w = 1600, h = 900 },
 	["WSXGA+"] = { w = 1680, h = 1050 },
 	["Full HD"] = { w = 1920, h = 1080 },
 	["WUXGA"] = { w = 1920, h = 1200 },
+	["FHD+"] = { w = 1920, h = 1280 },
 	["QHD"] = { w = 2560, h = 1440 },
 	["WQXGA"] = { w = 2560, h = 1600 },
 	["QHD+"] = { w = 3200, h = 1800 },
 	["UW-FHD"] = { w = 2560, h = 1080 },
 	["UWQHD"] = { w = 3440, h = 1440 },
+	["UW-QHD+"] = { w = 3840, h = 1600 },
 	["4K UHD"] = { w = 3840, h = 2160 },
 }
 
 M.RS_ORDER = {
-	"HD", "WXGA", "WXGA+", "HD+", "WSXGA+",
-	"Full HD", "WUXGA",
+	"HD", "FWXGA", "WXGA", "WXGA+", "HD+", "WSXGA+",
+	"Full HD", "WUXGA", "FHD+",
 	"QHD", "WQXGA", "QHD+",
-	"UW-FHD", "UWQHD",
+	"UW-FHD", "UWQHD", "UW-QHD+",
 	"4K UHD",
 }
 
@@ -578,6 +581,14 @@ function M.from_wh(w, h)
 		end
 	end
 
+	if 3840 <= w and 2000 <= h then
+		return "4K UHD"
+	end
+
+	if 3840 <= w and 1500 <= h then
+		return "UW-QHD+"
+	end
+
 	if 3840 <= w then
 		return "4K UHD"
 	end
@@ -602,6 +613,10 @@ function M.from_wh(w, h)
 		return "QHD"
 	end
 
+	if 1920 <= w and 1250 <= h then
+		return "FHD+"
+	end
+
 	if 1920 <= w and 1150 <= h then
 		return "WUXGA"
 	end
@@ -624,6 +639,10 @@ function M.from_wh(w, h)
 
 	if 1366 <= w then
 		return "WXGA"
+	end
+
+	if 1360 <= w then
+		return "FWXGA"
 	end
 
 	return "HD"

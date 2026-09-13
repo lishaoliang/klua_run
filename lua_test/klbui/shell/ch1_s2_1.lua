@@ -4,7 +4,7 @@
 -- @brief  1.2.1 UI kdialog
 -- @note   约定 **klua-test-design**; 页面按 page_tmpl
 --  \n 根 kdialog 固定 720p(1280x720) 相对画布居中; 九宫格背景 S001 /scale9/dialog_bg
---  \n 左 Get/Set/hide; 开窗由 ui.run
+--  \n 内容区 dlg_body 固定 640x480; 左 Get/Set/hide; 开窗由 ui.run
 --  \n 文案 lang.str; apply_lang 由 ui.run 调用
 -- @history 修改历史
 --  \n 2026 创建文件
@@ -36,6 +36,8 @@ local css_720p = {
 local PAGE_W = 1280
 local PAGE_H = 720
 local BODY_W = PAGE_W - 32
+local CONTENT_W = 640
+local CONTENT_H = 480
 local TITLE_H = 32
 local PAD = 16
 local ROW_H = 28
@@ -88,7 +90,7 @@ local dialog_720p = {
 		},
 		{
 			['type'] = 'kstatic',
-			['pos'] = {16, Y_BODY, BODY_W, ROW_H},
+			['pos'] = {16, Y_BODY, CONTENT_W, CONTENT_H},
 			['title'] = lang.str('KdialogBody'),
 			['name'] = 'dlg_body',
 		},
