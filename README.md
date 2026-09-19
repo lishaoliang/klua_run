@@ -10,6 +10,7 @@ klua 运行目录: **lua test** 手测用例、演示运行资源, 与 `klua` / 
 本目录 **不是** C 源码仓. 它存放:
 
 * `test.lua` + `lua_test/` — **lua test** 手测入口与用例库
+* `demo.lua` + `lua_demo/` — **lua demo** 大型场景入口与场景库 (**非** lua test)
 * `demores/` — 手维运行资源 (字库、皮肤图、多语言词条、媒体、静态网页)
 * Windows **Release** 运行时 (`*.exe` / `*.dll`) 与 `klbcore/` — **本仓入库**, 克隆后可直接运行 **lua test**
 
@@ -21,6 +22,8 @@ klua 运行目录: **lua test** 手测用例、演示运行资源, 与 `klua` / 
 klua_run/
   test.lua          # lua test CLI 入口
   lua_test/         # 用例库 (第1章 klbui / 第2章 kpfs / 第3章 klb k*)
+  demo.lua          # lua demo CLI 入口
+  lua_demo/         # 大型场景库 (非 lua test)
   demores/          # 运行资源
     font/           # 字库
     images/         # 皮肤图 + tmpimage (lua test 图片)
@@ -59,6 +62,8 @@ klua_run/
   klbcore/
   test.lua
   lua_test/
+  demo.lua
+  lua_demo/
   demores/
 ```
 
@@ -72,8 +77,26 @@ klua_run/
   klbcore/
   test.lua
   lua_test/
+  demo.lua
+  lua_demo/
   demores/
 ```
+
+## lua demo
+
+记名 **lua demo** = 大型场景验证 (**非** lua test). 入口 `demo.lua`, 场景库 `lua_demo/`. 章冻结 **1=ui / 2=net**. 已登记 `2.2` HTTP/HTTPS 静态服务 (含 `/lua_demo` `/lua_test` 浏览); `2.3` 同内容走 `klbweb`; `2.1` 预留大型 net.
+
+```bash
+cd klua_run
+./klua demo.lua list
+./klua demo.lua 2
+./klua demo.lua 2.2
+./klua demo.lua 2.3
+```
+
+Windows: `klua.exe demo.lua list`.
+
+场景文档: <https://gitee.com/klua/klua_doc/tree/master/lua/lua_demo>
 
 ## lua test
 
@@ -127,10 +150,11 @@ klua.exe test.lua 2.1.2
 | `language/` | `SMN_<lang>.lua` 词条 |
 | `media/` | 视频演示片源 |
 | `html/` | HTTP 静态页 |
+| `tls/` | HTTPS 演示自签 PEM (`cert.pem` / `key.pem`) |
 
 ## 相关仓库
 
 * [klb](https://gitee.com/klua/klb) — klua 宿主与 k* 绑定
 * [portfs](https://gitee.com/klua/portfs) — 文件系统库与 **kpfs** Lua 模块
-* [klua_doc](https://gitee.com/klua/klua_doc) — 文档 (含 lua test 用例说明)
+* [klua_doc](https://gitee.com/klua/klua_doc) — 文档 (含 lua test 用例说明、lua demo 场景说明)
 * [wlua](https://gitee.com/klua/wlua) — Windows 桌面 Lua 宿主 (SDL)
