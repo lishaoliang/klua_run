@@ -1,4 +1,4 @@
---[[
+﻿--[[
 -- Copyright (c) 2026, GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 -- @file   batch_worker.lua
 -- @brief  lua_test 批量 worker 入口 (kthread.start → registry.run)
@@ -105,11 +105,5 @@ end
 
 registry.run(doc_id, table.unpack(extra))
 
-if not ksys.is_exit() then
-	if not result_stored then
-		local code = saw_fail and 1 or 0
-		_store_result(_compute_passed(code), code)
-	end
-
-	orig_exit(saw_fail and 1 or 0)
-end
+-- 与 test.lua 单条一致: run 返回后由 C 循环直至用例 ksys.exit (kco.timeout / HTTP co_recv)
+-- 此处禁止 orig_exit, 否则会在异步 IO 未完成时拆掉 netconn

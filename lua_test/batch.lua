@@ -1,4 +1,4 @@
---[[
+﻿--[[
 -- Copyright (c) 2026, GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 -- @file   batch.lua
 -- @brief  lua_test 批量过滤与执行 (a / 1.x / 1.1.x; kthread + kmcache)
@@ -204,6 +204,7 @@ end
 local function _run_case_thread(doc_id, extra)
 	local kthread = require("kthread")
 	local kmcache = require("kmcache")
+	local ktime = require("ktime")
 
 	local result_key = _result_key(doc_id)
 	local start_args = { result_key, doc_id }
@@ -218,9 +219,16 @@ local function _run_case_thread(doc_id, extra)
 		return false, "kthread.start failed"
 	end
 
-	kthread.stop(name)
-
+	-- start 只等到入口脚本加载完; 须等 worker loop_once 跑完用例再 stop
+	local waited = 0
 	local status, passed, exit_code = kmcache.get(result_key)
+	while status == nil and waited < 8000 do
+		ktime.sleep(20)
+		waited = waited + 20
+		status, passed, exit_code = kmcache.get(result_key)
+	end
+
+	kthread.stop(name)
 
 	if status == nil then
 		return false, "no result"

@@ -2,7 +2,7 @@
 -- Copyright (c) 2026, GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 -- @file   registry.lua
 -- @brief  lua_test 用例注册与分发 (doc_id + 语义 id + 批量 a/1.x/1.1.x); 用例表见 registry_ch*.lua
--- @note   约定 **klua-test-design**; 第1章 klb, 第2章 kpfs, 第3章 klbui
+-- @note   约定 **klua-test-design**; 第1章 klbui, 第2章 kpfs, 第3章 klb
 --  \n item.ui=true 时单条先保证 wlua 宿主 (lua_test.klbui.ui)
 --  \n UI 页面模块可无 run(); 由 ui.run({ page = mod }) 开窗
 -- @history 修改历史
