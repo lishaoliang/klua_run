@@ -10,8 +10,8 @@
 
 | id | 语义 id | 宿主 | 说明 |
 |----|---------|------|------|
-| `2.2` | `net.http.static` | klua | HTTP/HTTPS 静态服务, 根 `demores/html`, 浏览 `/lua_demo` `/lua_test`, 证书 `demores/tls`; `demo.lua 2.2 [http_port] [https_port]` 默认 8000/8443; `https_port=0` 关闭 TLS |
-| `2.3` | `net.web.static` | klua | 同 2.2 内容, 走 `klbweb`; `demo.lua 2.3 [http_port] [https_port]` 默认 8000/8443; `https_port=0` 关闭 TLS |
+| `2.2` | `net.http.static` | klua | HTTP/HTTPS 静态服务, 根 `demores/html`, 浏览 `/lua_demo` `/lua_test`, 证书 `demores/tls`; `demo.lua 2.2 [port]` 默认 8000 同端口混用; 第2参 `0` 关闭 TLS |
+| `2.3` | `net.web.static` | klua | 同 2.2 内容, 走 `klbweb`; `demo.lua 2.3 [port]` 默认 8000 同端口混用; 第2参 `0` 关闭 TLS |
 
 `2.1` 预留大型 net demo, 未登记.
 

@@ -2,7 +2,7 @@
 -- Copyright (c) 2026, GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 -- @file   main.lua
 -- @brief  lua demo 2.2 HTTP/HTTPS 静态服务器 (demores/html + lua_demo + lua_test)
--- @note   klua demo.lua 2.2 [http_port] [https_port]; 默认 8000/8443; https_port=0 关闭 TLS
+-- @note   klua demo.lua 2.2 [port]; 默认 8000; 同端口 HTTP+HTTPS; 第2参 `0` 关闭 TLS
 --   \n 语义 id net.http.static; `/lua_demo` `/lua_test` 源码浏览; **非** lua test
 -- @history 修改历史
 --  \n 2026 创建文件
@@ -22,7 +22,6 @@ local klbhttp = require("klbcore.klbhttp")
 local M = {}
 
 local DEFAULT_PORT = 8000
-local DEFAULT_HTTPS_PORT = 8443
 local SERVER_NAME = "lua_demo/2.2"
 local KLB_SOCKET_CONNECT = 63
 local KLB_NETCODE_WBUF_EMPTY = 70
@@ -347,7 +346,7 @@ local function serve_conn(serve, mounts, tag)
 end
 
 
-local function fork_accept(listener, mounts, tag)
+local function fork_accept(listener, mounts)
 	kco.fork(function ()
 		while true do
 			local serve = listener:co_accept()
@@ -356,6 +355,10 @@ local function fork_accept(listener, mounts, tag)
 			end
 
 			kco.fork(function ()
+				local tag = "http"
+				if serve.tls and serve:tls() then
+					tag = "https"
+				end
 				serve_conn(serve, mounts, tag)
 			end)
 		end
@@ -363,31 +366,25 @@ local function fork_accept(listener, mounts, tag)
 end
 
 
-local function parse_ports(...)
+local function parse_port(...)
 	local args = { ... }
-	local http_port = tonumber(args[1]) or DEFAULT_PORT
-	local https_port = DEFAULT_HTTPS_PORT
+	local port = tonumber(args[1]) or DEFAULT_PORT
+	local want_https = true
 
 	if nil ~= args[2] then
-		https_port = tonumber(args[2])
-		if not https_port then
-			return nil, nil, "invalid https port"
+		local flag = tonumber(args[2])
+		if not flag then
+			return nil, nil, "invalid https flag"
 		end
+
+		want_https = (0 ~= flag)
 	end
 
-	if http_port < 1 or 65535 < http_port then
-		return nil, nil, "invalid http port"
+	if port < 1 or 65535 < port then
+		return nil, nil, "invalid port"
 	end
 
-	if 0 ~= https_port and (https_port < 1 or 65535 < https_port) then
-		return nil, nil, "invalid https port"
-	end
-
-	if 0 ~= https_port and http_port == https_port then
-		return nil, nil, "http/https port conflict"
-	end
-
-	return http_port, https_port, nil
+	return port, want_https, nil
 end
 
 
@@ -443,7 +440,7 @@ end
 
 
 local function main(...)
-	local http_port, https_port, err = parse_ports(...)
+	local port, want_https, err = parse_port(...)
 	if err then
 		print(err)
 		ksys.exit(1)
@@ -457,9 +454,38 @@ local function main(...)
 		return
 	end
 
-	local l_http = klbhttp.listen(http_port)
-	if not l_http then
-		print("http listen failed:", http_port)
+	local cert, key, tls_dir = nil, nil, ""
+	local mixed = false
+	if want_https then
+		cert, key, tls_dir = load_tls_pem()
+		if not cert then
+			print("https  skip (missing cert/key):", tls_dir)
+		end
+	else
+		print("https  off")
+	end
+
+	local listener
+	if want_https and cert then
+		listener = klbhttp.listen(port, {
+			tls = true,
+			plain = true,
+			cert = cert,
+			key = key,
+		})
+		if listener then
+			mixed = true
+		else
+			print("https mixed listen failed (no-ssl or bad cert):", port)
+		end
+	end
+
+	if not listener then
+		listener = klbhttp.listen(port)
+	end
+
+	if not listener then
+		print("http listen failed:", port)
 		ksys.exit(1)
 		return
 	end
@@ -468,44 +494,19 @@ local function main(...)
 	for i = 1, #mounts do
 		print("mount ", mounts[i].prefix, mounts[i].root)
 	end
-	print("listen ", string.format("http://127.0.0.1:%d/", http_port))
-
-	fork_accept(l_http, mounts, "http")
-
-	if 0 == https_port then
-		print("https  off")
-		print("stop   Ctrl+C")
-		return
+	print("listen ", string.format("http://127.0.0.1:%d/", port))
+	if mixed then
+		print("listen ", string.format("https://127.0.0.1:%d/", port))
+		print("tls    ", "self-signed demo cert; browser warn expected")
 	end
-
-	local cert, key, tls_dir = load_tls_pem()
-	if not cert then
-		print("https  skip (missing cert/key):", tls_dir)
-		print("stop   Ctrl+C")
-		return
-	end
-
-	local l_https = klbhttp.listen(https_port, {
-		tls = true,
-		cert = cert,
-		key = key,
-	})
-	if not l_https then
-		print("https listen failed (no-ssl or bad cert):", https_port)
-		print("stop   Ctrl+C")
-		return
-	end
-
-	print("listen ", string.format("https://127.0.0.1:%d/", https_port))
-	print("tls    ", "self-signed demo cert; browser warn expected")
 	print("stop   Ctrl+C")
 
-	fork_accept(l_https, mounts, "https")
+	fork_accept(listener, mounts)
 end
 
 
 -- @brief 启动 HTTP/HTTPS 静态服务, 长期运行至人工停止
--- @param [in] ...[any] 第1参 HTTP 端口, 默认 8000; 第2参 HTTPS 端口, 默认 8443, 0 关闭
+-- @param [in] ...[any] 第1参 端口, 默认 8000; 第2参 `0` 关闭 TLS (同端口混用)
 -- @return 无
 function M.run(...)
 	main(...)
